@@ -1,10 +1,12 @@
+#!/home/neural/DivyeshVishwakarma/damnbro/.venv/bin/python3
 import socket
 import threading
 import random
+import os
 
 # Server settings
-HOST = '10.10.7.81'
-PORT = 12345
+HOST = os.getenv('RENDER_EXTERNAL_HOST', '0.0.0.0')
+PORT = int(os.getenv('PORT', 12345))
 
 # List to keep track of connected clients and their names
 clients = []
