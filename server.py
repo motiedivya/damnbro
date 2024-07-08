@@ -68,6 +68,7 @@ def handle_client(client_socket):
 
 def main():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.settimeout(60)
     try:
         server.bind((HOST, PORT))
         server.listen()
@@ -79,6 +80,7 @@ def main():
     while True:
         try:
             client_socket, addr = server.accept()
+            client_socket.settimeout(60)
             print(f"Connection from {addr}")
             clients.append(client_socket)
             thread = threading.Thread(target=handle_client, args=(client_socket,))
