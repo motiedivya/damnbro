@@ -1,0 +1,39 @@
+#!/home/neural/DivyeshVishwakarma/damnbro/.venv/bin/python3
+#!/home/neural/damnbro/.venv/bin/python3
+import socket
+import threading
+
+# Server settings
+SERVER_HOST = '10.10.7.81'  # Update this to the server's IP address
+SERVER_PORT = 12345
+
+def receive_messages(client_socket):
+    while True:
+        try:
+            message = client_socket.recv(1024).decode('utf-8')
+            if message:
+                print(message)
+            else:
+                break
+        except:
+            print("Error receiving message.")
+            break
+
+def main():
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        client_socket.connect((SERVER_HOST, SERVER_PORT))
+        print("Connected to the server.")
+    except ConnectionRefusedError:
+        print(f"Failed to connect to {SERVER_HOST}:{SERVER_PORT}")
+        return
+
+    thread = threading.Thread(target=receive_messages, args=(client_socket,))
+    thread.start()
+
+    while True:
+        message = input()
+        client_socket.send(message.encode('utf-8'))
+
+if __name__ == "__main__":
+    main()
