@@ -23,7 +23,10 @@ def broadcast(message, client_socket):
             except Exception as e:
                 print(f"Error broadcasting message: {e}")
                 client.close()
-                clients.remove(client)
+                try:
+                    clients.remove(client)
+                except ValueError:
+                    pass
 
 def handle_client(client_socket):
     name = random.choice(names)
@@ -32,7 +35,11 @@ def handle_client(client_socket):
     print(welcome_message)
     broadcast(welcome_message.encode('utf-8'), client_socket)
     # Send the client their name
-    client_socket.send(f"Your name is {name}".encode('utf-8'))
+    try:
+        client_socket.send(f"Your name is {name}".encode('utf-8'))
+    except BrokenPipeError as e:
+        print(f"Error sending name to client: {e}")
+        return
 
     while True:
         try:
@@ -43,7 +50,8 @@ def handle_client(client_socket):
                 broadcast(full_message.encode('utf-8'), client_socket)
             else:
                 client_socket.close()
-                clients.remove(client_socket)
+                if client_socket in clients:
+                    clients.remove(client_socket)
                 leave_message = f"{name} has left the chat."
                 print(leave_message)
                 broadcast(leave_message.encode('utf-8'), client_socket)
@@ -51,7 +59,8 @@ def handle_client(client_socket):
         except Exception as e:
             print(f"Error handling client: {e}")
             client_socket.close()
-            clients.remove(client_socket)
+            if client_socket in clients:
+                clients.remove(client_socket)
             leave_message = f"{name} has left the chat."
             print(leave_message)
             broadcast(leave_message.encode('utf-8'), client_socket)
