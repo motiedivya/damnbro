@@ -1,4 +1,3 @@
-#!/home/neural/DivyeshVishwakarma/damnbro/.venv/bin/python3
 import socket
 import threading
 import random
