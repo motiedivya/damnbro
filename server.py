@@ -29,6 +29,18 @@ def broadcast(message, client_socket):
                     pass
 
 def handle_client(client_socket):
+    try:
+        # Attempt to read an initial message to determine if this is an HTTP request
+        initial_message = client_socket.recv(1024).decode('utf-8')
+        if initial_message.startswith('HEAD') or initial_message.startswith('OPTIONS') or initial_message.startswith('GET'):
+            print(f"HTTP request detected: {initial_message}")
+            client_socket.close()
+            return
+    except Exception as e:
+        print(f"Error reading initial message: {e}")
+        client_socket.close()
+        return
+
     name = random.choice(names)
     client_names[client_socket] = name
     welcome_message = f"{name} has joined the chat!"
@@ -49,6 +61,7 @@ def handle_client(client_socket):
                 print(full_message)
                 broadcast(full_message.encode('utf-8'), client_socket)
             else:
+                print(f"Empty message received, closing connection for {name}")
                 client_socket.close()
                 if client_socket in clients:
                     clients.remove(client_socket)
