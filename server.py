@@ -6,7 +6,7 @@ import os
 
 # Server settings
 HOST = os.getenv('RENDER_EXTERNAL_HOST', '0.0.0.0')
-PORT = int(os.getenv('PORT', 12345))
+PORT = int(os.getenv('PORT', 8086))
 
 # List to keep track of connected clients and their names
 clients = []
